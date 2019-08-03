@@ -9,40 +9,66 @@ function _inv_usage
     echo '$2: The Path of the File to process (Mandatory).'
     exit 1
 }
-main
+function encrypt_file
 {
-if ! which openssl > /dev/null; then
-    echo "Please install openssl to continue Encrypt/Decrypt."
-    exit 1
-fi
-if [ "x$INPUT" == "x"  ]; then
-    echo "Please Specify Input File."
-    _inv_usage
-fi
-
-
-if [ "x$MODE" == "xe" -o  "x$MODE" == "xencrypt"  ]; then
     echo "Encrypting File"
-    openssl aes-256-cbc -a -salt -in $INPUT -out $OUT
-    rm -rfP $INPUT
-    mv -f $OUT $INPUT
+    openssl aes-256-cbc -a -salt -in $INPUT -out $OUT > /dev/null 2>&1
     exitCode="$?"
-    exit $exitCode
-fi
-if [ "x$MODE" == "xr" -o  "x$MODE" == "xread"  ]; then
+    if [ $exitCode -eq 0 ]; then
+        rm -rfP $INPUT
+        mv -f $OUT $INPUT
+        echo "Done"
+    else
+        echo "Invalid Password"
+    fi
+    return $exitCode
+}
+function read_file
+{
     echo "Reading File"
     openssl aes-256-cbc -d -a -in $INPUT
-    exitCode="$?"
-    exit $exitCode
-fi
-if [ "x$MODE" == "xd" -o  "x$MODE" == "xdecrypt"  ]; then
-    echo "Decrypting File"
-    openssl aes-256-cbc -d -a -in $INPUT -out $OUT
-    rm -rfP $INPUT
-    mv -f $OUT $INPUT
-    exitCode="$?"
-    exit $exitCode
-else
-    _inv_usage
-fi
 }
+function decrypt_file
+{
+    echo "Decrypting File"
+    openssl aes-256-cbc -d -a -in $INPUT -out $OUT > /dev/null 2>&1
+    exitCode="$?"
+    if [ $exitCode -eq 0 ]; then
+        rm -rfP $INPUT
+        mv -f $OUT $INPUT
+        echo "Done"
+    else
+        echo "Invalid Password"
+    fi
+    return $exitCode
+}
+function main
+{
+    if ! which openssl > /dev/null; then
+        echo "Please install openssl to continue Encrypt/Decrypt."
+        exit 1
+    fi
+    if [ "x$INPUT" == "x"  ]; then
+        echo "Please Specify Input File."
+        _inv_usage
+    fi
+    if [ "x$MODE" == "xe" -o  "x$MODE" == "xencrypt"  ]; then
+        encrypt_file
+        exitCode=$?
+        return $exitCode
+    fi
+    if [ "x$MODE" == "xr" -o  "x$MODE" == "xread"  ]; then
+        read_file
+        exitCode="$?"
+        return $exitCode
+    fi
+    if [ "x$MODE" == "xd" -o  "x$MODE" == "xdecrypt"  ]; then
+        decrypt_file
+        exitCode=$?
+        return $exitCode
+    else
+        _inv_usage
+    fi
+}
+
+main
