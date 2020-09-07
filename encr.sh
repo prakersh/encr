@@ -2,6 +2,7 @@
 MODE=$1
 INPUT=$2
 OUT=$INPUT.temp
+
 function _inv_usage
 {
     echo "Invalid Usage of $0 : "
@@ -9,6 +10,7 @@ function _inv_usage
     echo '$2: The Path of the File to process (Mandatory).'
     exit 1
 }
+
 function encrypt_file
 {
     echo "Encrypting File"
@@ -23,11 +25,13 @@ function encrypt_file
     fi
     return $exitCode
 }
+
 function read_file
 {
     echo "Reading File"
     openssl aes-256-cbc -d -a -in $INPUT
 }
+
 function decrypt_file
 {
     echo "Decrypting File"
@@ -42,6 +46,7 @@ function decrypt_file
     fi
     return $exitCode
 }
+
 function main
 {
     if ! which openssl > /dev/null; then

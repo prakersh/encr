@@ -1,0 +1,59 @@
+-------------------------------------------------------------------------------
+README FOR ENCR
+-------------------------------------------------------------------------------
+encr.sh is a wrapper over openssl. It can be used to easily encrypt and decrypt
+a file with simple command line parameters. It is ready to use script and can 
+be stored on flash drive and used to decrypt file stored in drive for temporary
+use on a system.
+
+
+=============
+Prerequisites
+=============
+bash, openssl
+
+
+===============
+Using encr.sh
+===============
+$1: MODE (Mandatory).
+    Operation to perform on file
+    options:
+        "e" or "encrypt"
+        "d" or "decrypt"
+        "r" or "read"
+$2: FILE_PATH (Mandatory).
+    The Path of the File to process
+
+
+Sample flow of encrypting, reading and decrypting a file
+"""
+prakersh@Prakershs-MacBook-Pro ~/v/e/encr> cat test
+Hello World!
+prakersh@Prakershs-MacBook-Pro ~/v/e/encr> ./encr.sh e test
+Encrypting File
+enter aes-256-cbc encryption password:
+Verifying - enter aes-256-cbc encryption password:
+Done
+prakersh@Prakershs-MacBook-Pro ~/v/e/encr> cat test
+U2FsdGVkX19hGXu5EgTS1leCRIxLi/YJ77x/2cEzeAk=
+prakersh@Prakershs-MacBook-Pro ~/v/e/encr> ./encr.sh r test
+Reading File
+enter aes-256-cbc decryption password:
+Hello World!
+prakersh@Prakershs-MacBook-Pro ~/v/e/encr> cat test
+U2FsdGVkX19hGXu5EgTS1leCRIxLi/YJ77x/2cEzeAk=
+prakersh@Prakershs-MacBook-Pro ~/v/e/encr> ./encr.sh d test
+Decrypting File
+enter aes-256-cbc decryption password:
+Done
+prakersh@Prakershs-MacBook-Pro ~/v/e/encr> cat test
+Hello World!
+"""
+
+
+====================================================
+For any further queries ping me at prakersh@live.com
+====================================================
+
+
